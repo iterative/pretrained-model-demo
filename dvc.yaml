@@ -1,0 +1,8 @@
+stages:
+  train:
+    cmd: python pretrained-model-tuner.py
+    deps:
+    - pretrained-model-tuner.py
+    metrics:
+    - results.json:
+        cache: false
