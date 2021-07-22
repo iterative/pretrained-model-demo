@@ -81,8 +81,9 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25, is_ince
 
             print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, epoch_loss, epoch_acc))
 
-            with open("results.json", "w") as fd:
-                json.dump({'acc': epoch_acc, 'loss': epoch_loss}, fd, indent=4)
+            if phase == 'train':
+                with open("results.json", "w") as fd:
+                    json.dump({'acc': '{:.4f}'.format(epoch_acc), 'loss': '{:.4f}'.format(epoch_loss)}, fd, indent=4)
 
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
