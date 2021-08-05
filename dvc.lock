@@ -1,0 +1,20 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python pretrained_model_tuner.py
+    deps:
+    - path: data/hymenoptera_data
+      md5: df4902cb6875f8a1bc625414a70732f1.dir
+      size: 47404368
+      nfiles: 401
+    - path: pretrained_model_tuner.py
+      md5: 9e963cefb645185604665fb590146f1d
+      size: 7009
+    params:
+      params.yaml:
+        lr: 0.0003
+        momentum: 0.005
+    outs:
+    - path: results.json
+      md5: dc26ec8867a86409885a0b3c03a40403
+      size: 66

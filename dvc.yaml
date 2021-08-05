@@ -1,8 +1,12 @@
 stages:
   train:
-    cmd: python pretrained-model-tuner.py
+    cmd: python pretrained_model_tuner.py
     deps:
-    - pretrained-model-tuner.py
+    - data/hymenoptera_data
+    - pretrained_model_tuner.py
+    params:
+    - lr
+    - momentum
     metrics:
     - results.json:
         cache: false
