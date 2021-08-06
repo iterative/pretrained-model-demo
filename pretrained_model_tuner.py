@@ -14,7 +14,7 @@ from ruamel.yaml import YAML
 data_dir = "./data/hymenoptera_data"
 
 # Model that we want to use from these options: [resnet, alexnet, vgg, squeezenet, densenet, inception]
-model_name = "alexnet"
+model_name = "squeezenet"
 
 # Number of classes in the dataset
 num_classes = 2

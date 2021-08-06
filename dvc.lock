@@ -8,13 +8,13 @@ stages:
       size: 47404368
       nfiles: 401
     - path: pretrained_model_tuner.py
-      md5: 9e963cefb645185604665fb590146f1d
-      size: 7009
+      md5: fb28dbf5758d9cb1de34dedd8c01ee7c
+      size: 7012
     params:
       params.yaml:
-        lr: 0.0003
-        momentum: 0.005
+        lr: 0.01
+        momentum: 0.009
     outs:
     - path: results.json
-      md5: dc26ec8867a86409885a0b3c03a40403
-      size: 66
+      md5: 7688f89298c9946016fec5ff952695cb
+      size: 65
