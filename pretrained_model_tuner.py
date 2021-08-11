@@ -79,12 +79,15 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=2, is_incep
 
             print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, epoch_loss, epoch_acc))
 
+            epoch_time_elapsed = time.time() - since
+
             if phase == 'train':
                 with open("results.json", "w") as fd:
                     json.dump({'acc': epoch_acc.item(), 'loss': epoch_loss}, fd, indent=4)
                 torch.save(model.state_dict(), "model.pt")
                 dvclive.log('acc', epoch_acc.item())
                 dvclive.log('loss', epoch_loss)
+                dvclive.log('training_time', epoch_time_elapsed)
                 dvclive.next_step()
 
             if phase == 'val':
