@@ -12,7 +12,7 @@
 <tr><th style="text-align: right;">     acc</th><th style="text-align: right;">    loss</th><th style="text-align: right;">  step</th><th style="text-align: right;">  training_time</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align: right;">0.885246</td><td style="text-align: right;">0.282844</td><td style="text-align: right;">     1</td><td style="text-align: right;">        82.1425</td></tr>
+<tr><td style="text-align: right;">0.782787</td><td style="text-align: right;">0.481239</td><td style="text-align: right;">     3</td><td style="text-align: right;">        88.9725</td></tr>
 </tbody>
 </table>
 <br>
@@ -23,65 +23,28 @@
     "data": {
         "values": [
     {
-        "acc": "0.7827868852459017",
+        "loss": "0.7349001286459751",
         "rev": "workspace",
         "step": "0",
-        "timestamp": "1628695405871"
+        "timestamp": "1628699583934"
     },
     {
-        "acc": "0.8852459016393442",
+        "loss": "0.48291910964934553",
         "rev": "workspace",
         "step": "1",
-        "timestamp": "1628695460183"
-    }
-]
-    },
-    "title": "",
-    "width": 300,
-    "height": 300,
-    "mark": {
-        "type": "line"
-    },
-    "encoding": {
-        "x": {
-            "field": "step",
-            "type": "quantitative",
-            "title": "step"
-        },
-        "y": {
-            "field": "acc",
-            "type": "quantitative",
-            "title": "acc",
-            "scale": {
-                "zero": false
-            }
-        },
-        "color": {
-            "field": "rev",
-            "type": "nominal"
-        }
-    }
-}
-;
-    vegaEmbed('#plot0', spec);
-</script>
-<div id = "plot1"></div>
-<script type = "text/javascript">
-    var spec = {
-    "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
-    "data": {
-        "values": [
-    {
-        "loss": "0.5075198099261424",
-        "rev": "workspace",
-        "step": "0",
-        "timestamp": "1628695405871"
+        "timestamp": "1628699640471"
     },
     {
-        "loss": "0.2828440648488334",
+        "loss": "0.6673270991591157",
         "rev": "workspace",
-        "step": "1",
-        "timestamp": "1628695460184"
+        "step": "2",
+        "timestamp": "1628699715250"
+    },
+    {
+        "loss": "0.48123938187223964",
+        "rev": "workspace",
+        "step": "3",
+        "timestamp": "1628699773781"
     }
 ]
     },
@@ -112,9 +75,9 @@
     }
 }
 ;
-    vegaEmbed('#plot1', spec);
+    vegaEmbed('#plot0', spec);
 </script>
-<div id = "plot2"></div>
+<div id = "plot1"></div>
 <script type = "text/javascript">
     var spec = {
     "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
@@ -123,14 +86,26 @@
     {
         "rev": "workspace",
         "step": "0",
-        "timestamp": "1628695405871",
-        "training_time": "27.829617023468018"
+        "timestamp": "1628699583934",
+        "training_time": "30.12310767173767"
     },
     {
         "rev": "workspace",
         "step": "1",
-        "timestamp": "1628695460184",
-        "training_time": "82.14253520965576"
+        "timestamp": "1628699640471",
+        "training_time": "86.6616837978363"
+    },
+    {
+        "rev": "workspace",
+        "step": "2",
+        "timestamp": "1628699715250",
+        "training_time": "30.441587209701538"
+    },
+    {
+        "rev": "workspace",
+        "step": "3",
+        "timestamp": "1628699773781",
+        "training_time": "88.97254705429077"
     }
 ]
     },
@@ -150,6 +125,67 @@
             "field": "training_time",
             "type": "quantitative",
             "title": "training_time",
+            "scale": {
+                "zero": false
+            }
+        },
+        "color": {
+            "field": "rev",
+            "type": "nominal"
+        }
+    }
+}
+;
+    vegaEmbed('#plot1', spec);
+</script>
+<div id = "plot2"></div>
+<script type = "text/javascript">
+    var spec = {
+    "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+    "data": {
+        "values": [
+    {
+        "acc": "0.5450819672131147",
+        "rev": "workspace",
+        "step": "0",
+        "timestamp": "1628699583933"
+    },
+    {
+        "acc": "0.7950819672131147",
+        "rev": "workspace",
+        "step": "1",
+        "timestamp": "1628699640470"
+    },
+    {
+        "acc": "0.639344262295082",
+        "rev": "workspace",
+        "step": "2",
+        "timestamp": "1628699715249"
+    },
+    {
+        "acc": "0.7827868852459017",
+        "rev": "workspace",
+        "step": "3",
+        "timestamp": "1628699773780"
+    }
+]
+    },
+    "title": "",
+    "width": 300,
+    "height": 300,
+    "mark": {
+        "type": "line"
+    },
+    "encoding": {
+        "x": {
+            "field": "step",
+            "type": "quantitative",
+            "title": "step"
+        },
+        "y": {
+            "field": "acc",
+            "type": "quantitative",
+            "title": "acc",
             "scale": {
                 "zero": false
             }
