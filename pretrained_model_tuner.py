@@ -9,21 +9,18 @@ import json
 import os
 import copy
 from ruamel.yaml import YAML
+import dvclive
 
 # Where the data comes from
 data_dir = "./data/hymenoptera_data"
 
+# Load params.
+with open("params.yaml") as f:
+    yaml=YAML(typ='safe')
+    params = yaml.load(f)
+
 # Model that we want to use from these options: [resnet, alexnet, vgg, squeezenet, densenet, inception]
-model_name = "squeezenet"
-
-# Number of classes in the dataset
-num_classes = 2
-
-# Batch size used for training
-batch_size = 8
-
-# Number of training epochs we want to run
-num_epochs = 2
+model_name = params["model_name"]
 
 # If we want to fine-tune, this value should be False. If we want to feature extract, this value should be True.
 feature_extract = True
@@ -85,12 +82,19 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=2, is_incep
             if phase == 'train':
                 with open("results.json", "w") as fd:
                     json.dump({'acc': epoch_acc.item(), 'loss': epoch_loss}, fd, indent=4)
+                torch.save(model.state_dict(), "model.pt")
+                dvclive.log('acc', epoch_acc.item())
+                dvclive.log('loss', epoch_loss)
+                dvclive.next_step()
+
+            if phase == 'val':
+                with open("val_results.json", "w") as fd:
+                    json.dump({'acc': epoch_acc.item(), 'loss': epoch_loss}, fd, indent=4)
+                val_acc_history.append(epoch_acc)
 
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
-            if phase == 'val':
-                val_acc_history.append(epoch_acc)
         
         print()
 
@@ -138,7 +142,7 @@ def initialize_model(model_name, num_classes, feature_extract, use_pretrained=Tr
 
 def train():
     # Initialize model for this run
-    model_ft, input_size = initialize_model(model_name, num_classes, feature_extract, use_pretrained=True)
+    model_ft, input_size = initialize_model(model_name, params["num_classes"], feature_extract, use_pretrained=True)
 
     # Just normalization for validation
     data_transforms = {
@@ -158,14 +162,10 @@ def train():
 
     print("Initializing Datasets and Dataloaders...")
 
-    # Load params.
-    with open("params.yaml") as f:
-        yaml=YAML(typ='safe')
-        params = yaml.load(f)
     # Create training and validation datasets
     image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x), data_transforms[x]) for x in ['train', 'val']}
     # Create training and validation dataloaders
-    dataloaders_dict = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=batch_size, shuffle=True, num_workers=4) for x in ['train', 'val']}
+    dataloaders_dict = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=params["batch_size"], shuffle=True, num_workers=4) for x in ['train', 'val']}
 
     model_ft = model_ft.to(device)
 
@@ -194,7 +194,7 @@ def train():
     criterion = nn.CrossEntropyLoss()
 
     # Train and evaluate
-    model_ft, hist = train_model(model_ft, dataloaders_dict, criterion, optimizer_ft, num_epochs=num_epochs, is_inception=(model_name=="inception"))
+    model_ft, hist = train_model(model_ft, dataloaders_dict, criterion, optimizer_ft, num_epochs=params["num_epochs"], is_inception=(model_name=="inception"))
 
 if __name__ == "__main__":
     train()

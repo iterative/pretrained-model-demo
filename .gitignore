@@ -2,3 +2,5 @@
 data/
 .DS_Store
 results.json
+/model.pt
+/dvclive
