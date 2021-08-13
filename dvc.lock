@@ -8,17 +8,17 @@ stages:
       size: 47404368
       nfiles: 401
     - path: pretrained_model_tuner.py
-      md5: fc81509dbd89fd15ee6f7cd2b0944205
-      size: 7376
+      md5: 8d5c14665646840ce1bf0c638963430c
+      size: 7230
     params:
       params.yaml:
         lr: 0.001
         momentum: 0.09
     outs:
-    - path: dvclive
-      md5: 4a15b1e85117e6b15ef0a88d53e8af68.dir
-      size: 500
-      nfiles: 3
     - path: model.pt
-      md5: 2091a80938a604d31b9a6956d2813f24
+      md5: 06498bebff0e97ff61838cf71b60ad39
       size: 2963849
+    - path: results
+      md5: f123b84b4ee7d487f34bde0a4f87a507.dir
+      size: 285
+      nfiles: 3

@@ -7,10 +7,14 @@ stages:
     params:
       - lr
       - momentum
+      - model_name
+      - num_classes
+      - batch_size
+      - num_epochs
     outs:
       - model.pt:
           checkpoint: true
     live:
-      dvclive:
+      results:
         summary: true
         html: true

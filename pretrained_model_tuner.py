@@ -82,9 +82,6 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=2, is_incep
             epoch_time_elapsed = time.time() - since
 
             if phase == 'train':
-                with open("results.json", "w") as fd:
-                    json.dump({'acc': epoch_acc.item(), 'loss': epoch_loss}, fd, indent=4)
-
                 torch.save(model.state_dict(), "model.pt")
 
                 dvclive.log('acc', epoch_acc.item())
