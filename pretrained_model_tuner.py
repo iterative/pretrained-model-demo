@@ -94,7 +94,7 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=2, is_incep
 
                 val_acc_history.append(epoch_acc)
                 
-            dvclive.next_step()
+                dvclive.next_step()
 
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
