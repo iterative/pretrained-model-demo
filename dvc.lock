@@ -8,21 +8,21 @@ stages:
       size: 47404368
       nfiles: 401
     - path: pretrained_model_tuner.py
-      md5: 8d5c14665646840ce1bf0c638963430c
-      size: 7230
+      md5: 55bdba35ee6b0b294adeb1e57922f61c
+      size: 7191
     params:
       params.yaml:
         batch_size: 8
-        lr: 0.025
+        lr: 0.001
         model_name: squeezenet
-        momentum: 0.5
+        momentum: 0.09
         num_classes: 2
-        num_epochs: 2
+        num_epochs: 5
     outs:
     - path: model.pt
-      md5: 68ac43e1028bf4e10e532c05d1b5f66d
+      md5: e0017f3f06b10d36ed52eae5f4768d67
       size: 2963849
     - path: results
-      md5: ea11b5dd019dae519b7aece2cd119e24.dir
-      size: 287
-      nfiles: 3
+      md5: 75f4eae9d8086c10e7db7778fd826e08.dir
+      size: 514
+      nfiles: 5
