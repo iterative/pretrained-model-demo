@@ -12,13 +12,17 @@ stages:
       size: 7230
     params:
       params.yaml:
-        lr: 0.001
-        momentum: 0.09
+        batch_size: 8
+        lr: 0.025
+        model_name: squeezenet
+        momentum: 0.5
+        num_classes: 2
+        num_epochs: 2
     outs:
     - path: model.pt
-      md5: 06498bebff0e97ff61838cf71b60ad39
+      md5: 68ac43e1028bf4e10e532c05d1b5f66d
       size: 2963849
     - path: results
-      md5: f123b84b4ee7d487f34bde0a4f87a507.dir
-      size: 285
+      md5: ea11b5dd019dae519b7aece2cd119e24.dir
+      size: 287
       nfiles: 3

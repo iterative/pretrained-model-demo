@@ -87,13 +87,14 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=2, is_incep
                 dvclive.log('acc', epoch_acc.item())
                 dvclive.log('loss', epoch_loss)
                 dvclive.log('training_time', epoch_time_elapsed)
-                
-                dvclive.next_step()
 
             if phase == 'val':
-                with open("val_results.json", "w") as fd:
-                    json.dump({'acc': epoch_acc.item(), 'loss': epoch_loss}, fd, indent=4)
+                dvclive.log('val_acc', epoch_acc.item())
+                dvclive.log('val_loss', epoch_loss)
+
                 val_acc_history.append(epoch_acc)
+                
+            dvclive.next_step()
 
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
