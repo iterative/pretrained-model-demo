@@ -36,8 +36,9 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=2, is_incep
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
 
-    for epoch in range(dvclive.get_step(), dvclive.get_step() + num_epochs):
-        print(f"Epoch {epoch}/{num_epochs - 1}")
+    total = dvclive.get_step() + num_epochs
+    for epoch in range(dvclive.get_step(), total):
+        print(f"Epoch {epoch}/{total - 1}")
         print("-" * 10)
 
         for phase in ['train', 'val']:
