@@ -1,51 +1,52 @@
-from __future__ import print_function
-from __future__ import division
+import copy
+import json
+import os
+from time import time
+
+import dvclive
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import datasets, models, transforms
-import time
-import json
-import os
-import copy
 from ruamel.yaml import YAML
-import dvclive
 
 # Where the data comes from
 data_dir = "./data/hymenoptera_data"
 
-# Load params.
+# Load params
 with open("params.yaml") as f:
-    yaml=YAML(typ='safe')
+    yaml = YAML(typ='safe')
     params = yaml.load(f)
 
 # Model that we want to use from these options: [resnet, alexnet, vgg, squeezenet, densenet, inception]
 model_name = params["model_name"]
 
-# If we want to fine-tune, this value should be False. If we want to feature extract, this value should be True.
+# False to fine-tune, True for feature extraction
 feature_extract = True
 
-# Detect if we have a GPU available
+# Detect if a GPU is available
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+
 def train_model(model, dataloaders, criterion, optimizer, num_epochs=2, is_inception=False):
-    since = time.time()
+    since = time()
 
     val_acc_history = []
 
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
 
-    for epoch in range(num_epochs):
-        print('Epoch {}/{}'.format(epoch, num_epochs - 1))
-        print('-' * 10)
+    total = dvclive.get_step() + num_epochs
+    for epoch in range(dvclive.get_step(), total):
+        print(f"Epoch {epoch}/{total - 1}")
+        print("-" * 10)
 
         for phase in ['train', 'val']:
             if phase == 'train':
                 model.train()
             else:
                 model.eval()
-            
+
             running_loss = 0.0
             running_corrects = 0
 
@@ -60,11 +61,11 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=2, is_incep
                         output, aux_outputs = model(inputs)
                         loss1 = criterion(outputs, labels)
                         loss2 = criterion(aux_outputs, labels)
-                        loss = loss1 + 0.4*loss2
+                        loss = loss1 + 0.4 * loss2
                     else:
                         outputs = model(inputs)
                         loss = criterion(outputs, labels)
-                    
+
                     _, preds = torch.max(outputs, 1)
 
                     if phase == 'train':
@@ -73,13 +74,13 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=2, is_incep
 
                 running_loss += loss.item() * inputs.size(0)
                 running_corrects += torch.sum(preds == labels.data)
-                    
+
             epoch_loss = running_loss / len(dataloaders[phase].dataset)
             epoch_acc = running_corrects.double() / len(dataloaders[phase].dataset)
 
-            print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, epoch_loss, epoch_acc))
+            print(f"{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}")
 
-            epoch_time_elapsed = time.time() - since
+            epoch_time_elapsed = time() - since
 
             if phase == 'train':
                 torch.save(model.state_dict(), "model.pt")
@@ -93,60 +94,55 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=2, is_incep
                 dvclive.log('val_loss', epoch_loss)
 
                 val_acc_history.append(epoch_acc)
-                
-                dvclive.next_step()
 
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
-        
+
+        dvclive.next_step()
         print()
 
-    time_elapsed = time.time() - since
+    time_elapsed = time() - since
 
-    print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
-    print('Best val acc: {:.4f}'.format(best_acc))
+    print(f"Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s")
+    print(f"Best val acc: {best_acc:.4f}")
 
     model.load_state_dict(best_model_wts)
 
     return model, val_acc_history
+
 
 def set_parameter_requires_grad(model, feature_extracting):
     if feature_extracting:
         for param in model.parameters():
             param.requires_grad = False
 
+
 def initialize_model(model_name, num_classes, feature_extract, use_pretrained=True):
     model_ft = None
     input_size = 0
 
     if model_name == "alexnet":
-        """Alexnet
-        """
         model_ft = models.alexnet(pretrained=use_pretrained)
         set_parameter_requires_grad(model_ft, feature_extract)
         num_ftrs = model_ft.classifier[6].in_features
         model_ft.classifier[6] = nn.Linear(num_ftrs, num_classes)
         input_size = 224
-
     elif model_name == "squeezenet":
-        """Squeezenet
-        """
         model_ft = models.squeezenet1_0(pretrained=use_pretrained)
         set_parameter_requires_grad(model_ft, feature_extract)
-        model_ft.classifier[1] = nn.Conv2d(512, num_classes, kernel_size=(1,1), stride=(1,1))
+        model_ft.classifier[1] = nn.Conv2d(512, num_classes, kernel_size=(1, 1), stride=(1, 1))
         model_ft.num_classes = num_classes
         input_size = 224
-    
     else:
-        print("Do better. Pick a valid model name.")
-        exit()
+        raise ValueError('Model name must be "alexnet" or "squeezenet"')
 
     return model_ft, input_size
 
+
 def train():
     # Initialize model for this run
-    model_ft, input_size = initialize_model(model_name, params["num_classes"], feature_extract, use_pretrained=True)
+    model_ft, input_size = initialize_model(model_name, params['num_classes'], feature_extract, use_pretrained=True)
 
     # Just normalization for validation
     data_transforms = {
@@ -161,7 +157,7 @@ def train():
             transforms.CenterCrop(input_size),
             transforms.ToTensor(),
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-        ]),
+        ])
     }
 
     print("Initializing Datasets and Dataloaders...")
@@ -182,23 +178,24 @@ def train():
     print("Params to learn:")
     if feature_extract:
         params_to_update = []
-        for name,param in model_ft.named_parameters():
+        for name, param in model_ft.named_parameters():
             if param.requires_grad == True:
                 params_to_update.append(param)
-                print("\t",name)
+                print("\t", name)
     else:
-        for name,param in model_ft.named_parameters():
+        for name, param in model_ft.named_parameters():
             if param.requires_grad == True:
-                print("\t",name)
+                print("\t", name)
 
     # Observe that all parameters are being optimized
-    optimizer_ft = optim.SGD(params_to_update, lr=params["lr"], momentum=params["momentum"])
+    optimizer_ft = optim.SGD(params_to_update, lr=params['lr'], momentum=params['momentum'])
 
     # Setup the loss fxn
     criterion = nn.CrossEntropyLoss()
 
     # Train and evaluate
-    model_ft, hist = train_model(model_ft, dataloaders_dict, criterion, optimizer_ft, num_epochs=params["num_epochs"], is_inception=(model_name=="inception"))
+    model_ft, hist = train_model(model_ft, dataloaders_dict, criterion, optimizer_ft, num_epochs=params['num_epochs'], is_inception=(model_name=="inception"))
+
 
 if __name__ == "__main__":
     train()
