@@ -3,7 +3,7 @@ import json
 import os
 from time import time
 
-import dvclive
+from dvclive import Live
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -35,6 +35,8 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=2, is_incep
 
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
+
+    dvclive = Live()
 
     total = dvclive.get_step() + num_epochs
     for epoch in range(dvclive.get_step(), total):

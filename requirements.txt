@@ -1,5 +1,5 @@
 dvc
-dvclive
+dvclive>=0.4.0
 matplotlib
 numpy
 torch
